@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>AL HABIB TRAVEL UK - VIP Booking System</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a2a;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0a0a2a 0%, #1a1a3e 50%, #0d0d35 100%);
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: moveBg 60s linear infinite;
+        }
+
+        @keyframes moveBg {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* VIP Header */
+        .vip-header {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 20px 35px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border: 1px solid rgba(255,215,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f4a261, #e76f51);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+        }
+
+        .logo-text h1 {
+            font-size: 28px;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+
+        .logo-text h1 span {
+            color: #f4a261;
+        }
+
+        .logo-text p {
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #f4a261, #e76f51);
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .developer-name {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,215,0,0.15);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(244,162,97,0.4);
+        }
+
+        .stat-info h3 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #f4a261;
+        }
+
+        .stat-info p {
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+        }
+
+        .stat-icon i {
+            font-size: 45px;
+            color: rgba(244,162,97,0.4);
+        }
+
+        /* Form Card */
+        .form-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,215,0,0.15);
+        }
+
+        .form-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid #f4a261;
+            padding-left: 15px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-group input, .input-group select {
+            padding: 12px 15px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 15px;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #f4a261;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f4a261, #e76f51);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(244,162,97,0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #f4a261;
+        }
+
+        /* Search & Filter */
+        .search-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 20px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 50px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .filter-select {
+            padding: 12px 20px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 50px;
+            color: white;
+        }
+
+        /* Table */
+        .table-wrapper {
+            background: rgba(255,255,255,0.06);
+            border-radius: 25px;
+            overflow-x: auto;
+            padding: 5px;
+        }
+
+        .booking-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .booking-table th {
+            padding: 15px 12px;
+            text-align: left;
+            color: #f4a261;
+            font-weight: 600;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .booking-table td {
+            padding: 12px;
+            color: rgba(255,255,255,0.85);
+            font-size: 13px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .status-paid {
+            background: rgba(39,174,96,0.2);
+            color: #2ecc71;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-unpaid {
+            background: rgba(231,76,60,0.2);
+            color: #e74c3c;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .action-btns i {
+            font-size: 18px;
+            margin: 0 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .fa-edit { color: #f4a261; }
+        .fa-trash-alt { color: #e74c3c; }
+        .fa-edit:hover, .fa-trash-alt:hover { transform: scale(1.1); }
+
+        /* Reminder Panel */
+        .reminder-panel {
+            background: linear-gradient(135deg, rgba(244,162,97,0.15), rgba(231,111,81,0.1));
+            border-left: 5px solid #f4a261;
+            border-radius: 20px;
+            padding: 15px 25px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1a1a3e;
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(244,162,97,0.3);
+        }
+
+        .modal-content h3 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            color: white;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .vip-header { flex-direction: column; text-align: center; gap: 15px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+            .booking-table th, .booking-table td { font-size: 10px; padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+<div class="bg-animation"></div>
+
+<div class="container">
+    <!-- VIP Header -->
+    <div class="vip-header">
+        <div class="logo-area">
+            <div class="logo-icon">
+                <i class="fas fa-crown"></i>
+            </div>
+            <div class="logo-text">
+                <h1>AL HABIB <span>TRAVEL UK</span></h1>
+                <p>Premium Umrah & Flight Booking System</p>
+                <div class="developer-name"><i class="fas fa-code"></i> Abdul Rehman Siddiqui</div>
+            </div>
+        </div>
+        <div class="vip-badge">
+            <i class="fas fa-gem"></i> VIP ACCESS
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid" id="statsContainer">
+        <div class="stat-card">
+            <div class="stat-info"><h3 id="totalBookings">0</h3><p>Total Bookings</p></div>
+            <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-info"><h3 id="totalRevenue">£0</h3><p>Total Revenue (PAID)</p></div>
+            <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-info"><h3 id="unpaidCount">0</h3><p>Unpaid Bookings</p></div>
+            <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-info"><h3 id="upcomingCount">0</h3><p>Upcoming (7 days)</p></div>
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+        </div>
+    </div>
+
+    <!-- Reminder Panel -->
+    <div class="reminder-panel" id="reminderPanel">
+        <div><i class="fas fa-bell" style="color:#f4a261; margin-right:10px;"></i> <strong>Reminders:</strong> <span id="reminderText">No pending reminders</span></div>
+        <button class="btn btn-outline" onclick="dismissReminders()" style="padding:5px 15px; font-size:12px;">Dismiss</button>
+    </div>
+
+    <!-- Add Booking Form -->
+    <div class="form-card">
+        <div class="form-title"><i class="fas fa-plus-circle"></i> Add New Booking</div>
+        <form id="bookingForm">
+            <div class="form-grid">
+                <div class="input-group"><label>Guest Name</label><input type="text" id="guestName" placeholder="Enter guest name" required></div>
+                <div class="input-group"><label>Hotel / Airline</label><input type="text" id="hotelAirline" placeholder="e.g., Conrad Makkah, Saudia Airlines" list="hotelList"></div>
+                <div class="input-group"><label>Amount (£)</label><input type="number" step="0.01" id="amount" placeholder="0.00"></div>
+                <div class="input-group"><label>Check In</label><input type="date" id="checkIn"></div>
+                <div class="input-group"><label>Check Out</label><input type="date" id="checkOut"></div>
+                <div class="input-group"><label>Payment Status</label><select id="paymentStatus"><option value="PAID">PAID</option><option value="UNPAID">UNPAID</option></select></div>
+                <div class="input-group"><label>Agent Name</label><input type="text" id="agentName" placeholder="Agent name"></div>
+                <div class="input-group"><label>Vendor</label><select id="vendor"><option value="TBO">TBO</option><option value="Booking.com">Booking.com</option><option value="Agoda">Agoda</option><option value="Rezlive">Rezlive</option><option value="Stuba">Stuba</option><option value="RateHawk">RateHawk</option></select></div>
+            </div>
+            <div style="margin-top:20px; display:flex; gap:10px;">
+                <button type="submit" class="btn"><i class="fas fa-save"></i> Save Booking</button>
+                <button type="button" class="btn btn-outline" onclick="resetForm()"><i class="fas fa-undo"></i> Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="search-bar">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search by guest name, hotel, or airline...">
+        <select id="filterPayment" class="filter-select"><option value="ALL">All Payments</option><option value="PAID">PAID</option><option value="UNPAID">UNPAID</option></select>
+    </div>
+
+    <!-- Bookings Table -->
+    <div class="table-wrapper">
+        <table class="booking-table">
+            <thead>
+                <tr><th>ID</th><th>Date</th><th>Guest Name</th><th>Hotel/Airline</th><th>Amount</th><th>Check In</th><th>Check Out</th><th>Agent</th><th>Payment</th><th>Vendor</th><th>Actions</th>
+            </thead>
+            <tbody id="bookingsTableBody"></tbody>
+        </table>
+    </div>
+
+    <footer>
+        <i class="fas fa-mosque"></i> AL HABIB TRAVEL UK - Complete VIP Booking Management | All data saved locally | Developed by Abdul Rehman Siddiqui
+    </footer>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h3><i class="fas fa-edit"></i> Edit Booking</h3>
+        <input type="hidden" id="editId">
+        <input type="text" id="editGuestName" placeholder="Guest Name">
+        <input type="text" id="editHotelAirline" placeholder="Hotel/Airline">
+        <input type="number" id="editAmount" placeholder="Amount">
+        <input type="date" id="editCheckIn">
+        <input type="date" id="editCheckOut">
+        <select id="editPaymentStatus"><option value="PAID">PAID</option><option value="UNPAID">UNPAID</option></select>
+        <div class="modal-buttons">
+            <button class="btn" onclick="saveEdit()">Save Changes</button>
+            <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<datalist id="hotelList">
+    <option>🏙️ Conrad Makkah 5★</option><option>🏙️ Fairmont Makkah Clock Tower 5★</option><option>🏙️ Pullman ZamZam Makkah 5★</option>
+    <option>🏙️ Swissôtel Al Maqam 5★</option><option>🏙️ Hilton Makkah Convention 5★</option><option>🏙️ Anjum Hotel Makkah 5★</option>
+    <option>🏙️ DoubleTree by Hilton Makkah 4★</option><option>🏙️ Le Meridien Makkah 4★</option><option>🏙️ Al Ebaa Hotel Makkah 3★</option>
+    <option>🕌 Oberoi Madinah 5★</option><option>🕌 Pullman Madinah 5★</option><option>🕌 Anwar Al Madinah 5★</option>
+    <option>🕌 Dallah Taibah Hotel 4★</option><option>✈️ Saudia Airlines</option><option>✈️ British Airways</option>
+    <option>✈️ Wizz Air UK</option><option>✈️ Pegasus Airlines</option><option>✈️ Etihad Airways</option>
+    <option>✈️ Qatar Airways</option><option>✈️ Turkish Airlines</option><option>✈️ Emirates</option>
+    <option>✈️ Flyadeal</option><option>✈️ Flynas</option><option>✈️ easyJet</option>
+</datalist>
+
+<script>
+    // Data Storage
+    let bookings = [];
+    let editId = null;
+
+    // Load data from localStorage
+    function loadData() {
+        const stored = localStorage.getItem('alhabib_vip_bookings');
+        if(stored) {
+            bookings = JSON.parse(stored);
+        } else {
+            // Sample data
+            bookings = [
+                { id: 1001, date: new Date().toISOString().slice(0,10), guestName: "Muzzammil Hussain", hotelAirline: "🏙️ Conrad Makkah 5★", amount: 1290, checkIn: "2026-05-15", checkOut: "2026-05-22", agentName: "Ejaz", paymentStatus: "UNPAID", vendor: "TBO" },
+                { id: 1002, date: new Date().toISOString().slice(0,10), guestName: "Sarah Ahmed", hotelAirline: "✈️ Saudia Airlines", amount: 540, checkIn: "2026-05-20", checkOut: "2026-05-27", agentName: "Nouman", paymentStatus: "PAID", vendor: "Booking.com" },
+                { id: 1003, date: new Date().toISOString().slice(0,10), guestName: "Omar Farooq", hotelAirline: "🕌 Oberoi Madinah 5★", amount: 2350, checkIn: "2026-06-01", checkOut: "2026-06-08", agentName: "Okasha", paymentStatus: "UNPAID", vendor: "Agoda" }
+            ];
+        }
+        renderTable();
+        updateStats();
+        updateReminders();
+    }
+
+    function saveData() {
+        localStorage.setItem('alhabib_vip_bookings', JSON.stringify(bookings));
+        renderTable();
+        updateStats();
+        updateReminders();
+    }
+
+    function generateId() {
+        return bookings.length > 0 ? Math.max(...bookings.map(b => b.id)) + 1 : 1001;
+    }
+
+    // Add booking
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const newBooking = {
+            id: generateId(),
+            date: new Date().toISOString().slice(0,10),
+            guestName: document.getElementById('guestName').value,
+            hotelAirline: document.getElementById('hotelAirline').value,
+            amount: parseFloat(document.getElementById('amount').value),
+            checkIn: document.getElementById('checkIn').value,
+            checkOut: document.getElementById('checkOut').value,
+            agentName: document.getElementById('agentName').value,
+            paymentStatus: document.getElementById('paymentStatus').value,
+            vendor: document.getElementById('vendor').value
+        };
+        bookings.push(newBooking);
+        saveData();
+        resetForm();
+        showToast('Booking added successfully!');
+    });
+
+    function resetForm() {
+        document.getElementById('guestName').value = '';
+        document.getElementById('hotelAirline').value = '';
+        document.getElementById('amount').value = '';
+        document.getElementById('checkIn').value = '';
+        document.getElementById('checkOut').value = '';
+        document.getElementById('agentName').value = '';
+        document.getElementById('paymentStatus').value = 'PAID';
+        document.getElementById('vendor').value = 'TBO';
+    }
+
+    function deleteBooking(id) {
+        if(confirm('Are you sure you want to delete this booking?')) {
+            bookings = bookings.filter(b => b.id !== id);
+            saveData();
+            showToast('Booking deleted!');
+        }
+    }
+
+    function openEditModal(booking) {
+        editId = booking.id;
+        document.getElementById('editGuestName').value = booking.guestName;
+        document.getElementById('editHotelAirline').value = booking.hotelAirline;
+        document.getElementById('editAmount').value = booking.amount;
+        document.getElementById('editCheckIn').value = booking.checkIn;
+        document.getElementById('editCheckOut').value = booking.checkOut;
+        document.getElementById('editPaymentStatus').value = booking.paymentStatus;
+        document.getElementById('editModal').style.display = 'flex';
+    }
+
+    function saveEdit() {
+        const index = bookings.findIndex(b => b.id === editId);
+        if(index !== -1) {
+            bookings[index] = {
+                ...bookings[index],
+                guestName: document.getElementById('editGuestName').value,
+                hotelAirline: document.getElementById('editHotelAirline').value,
+                amount: parseFloat(document.getElementById('editAmount').value),
+                checkIn: document.getElementById('editCheckIn').value,
+                checkOut: document.getElementById('editCheckOut').value,
+                paymentStatus: document.getElementById('editPaymentStatus').value
+            };
+            saveData();
+            closeModal();
+            showToast('Booking updated!');
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('editModal').style.display = 'none';
+        editId = null;
+    }
+
+    function renderTable() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const filterPayment = document.getElementById('filterPayment').value;
+        
+        let filtered = bookings.filter(b => {
+            const matchSearch = b.guestName.toLowerCase().includes(searchTerm) || b.hotelAirline.toLowerCase().includes(searchTerm);
+            const matchPayment = filterPayment === 'ALL' || b.paymentStatus === filterPayment;
+            return matchSearch && matchPayment;
+        });
+        
+        const tbody = document.getElementById('bookingsTableBody');
+        if(filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding:40px;">📭 No bookings found</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = filtered.map(b => `
+            <tr>
+                <td>${b.id}</td>
+                <td>${b.date}</td>
+                <td><strong>${escapeHtml(b.guestName)}</strong></td>
+                <td>${escapeHtml(b.hotelAirline)}</td>
+                <td>£${b.amount.toFixed(2)}</td>
+                <td>${b.checkIn}</td>
+                <td>${b.checkOut}</td>
+                <td>${escapeHtml(b.agentName || '-')}</td>
+                <td><span class="${b.paymentStatus === 'PAID' ? 'status-paid' : 'status-unpaid'}">${b.paymentStatus}</span></td>
+                <td>${escapeHtml(b.vendor)}</td>
+                <td class="action-btns">
+                    <i class="fas fa-edit" onclick='openEditModal(${JSON.stringify(b)})'></i>
+                    <i class="fas fa-trash-alt" onclick="deleteBooking(${b.id})"></i>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function updateStats() {
+        const total = bookings.length;
+        const revenue = bookings.filter(b => b.paymentStatus === 'PAID').reduce((sum, b) => sum + b.amount, 0);
+        const unpaid = bookings.filter(b => b.paymentStatus === 'UNPAID').length;
+        const today = new Date();
+        const upcoming = bookings.filter(b => {
+            const checkIn = new Date(b.checkIn);
+            const diff = (checkIn - today) / (1000*3600*24);
+            return diff >= 0 && diff <= 7;
+        }).length;
+        
+        document.getElementById('totalBookings').innerText = total;
+        document.getElementById('totalRevenue').innerText = `£${revenue.toFixed(2)}`;
+        document.getElementById('unpaidCount').innerText = unpaid;
+        document.getElementById('upcomingCount').innerText = upcoming;
+    }
+
+    function updateReminders() {
+        const today = new Date();
+        const unpaidReminders = bookings.filter(b => {
+            if(b.paymentStatus !== 'UNPAID') return false;
+            const checkIn = new Date(b.checkIn);
+            const diff = (checkIn - today) / (1000*3600*24);
+            return diff >= 0 && diff <= 2;
+        });
+        
+        const reminderText = document.getElementById('reminderText');
+        if(unpaidReminders.length === 0) {
+            reminderText.innerHTML = 'No pending reminders';
+        } else {
+            reminderText.innerHTML = unpaidReminders.map(r => `${r.guestName} (check-in: ${r.checkIn})`).join(' | ');
+        }
+    }
+
+    function dismissReminders() {
+        document.getElementById('reminderText').innerHTML = 'Reminders dismissed';
+    }
+
+    function showToast(msg) {
+        const toast = document.createElement('div');
+        toast.innerHTML = msg;
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.right = '20px';
+        toast.style.background = 'linear-gradient(135deg, #f4a261, #e76f51)';
+        toast.style.color = 'white';
+        toast.style.padding = '12px 24px';
+        toast.style.borderRadius = '50px';
+        toast.style.zIndex = '1000';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    function escapeHtml(str) {
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('keyup', renderTable);
+    document.getElementById('filterPayment').addEventListener('change', renderTable);
+
+    // Close modal on outside click
+    window.onclick = function(e) {
+        if(e.target === document.getElementById('editModal')) closeModal();
+    }
+
+    loadData();
+</script>
+</body>
+</html>
